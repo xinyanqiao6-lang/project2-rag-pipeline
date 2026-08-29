@@ -6,7 +6,8 @@ import time
 import httpx
 from typing import List, Tuple
 from app.config import (SILICONFLOW_API_KEY, SILICONFLOW_BASE_URL,
-                        LLM_MODEL, MOCK_MODE, TOP_K)
+                        LLM_MODEL, MOCK_MODE, TOP_K,
+                        LLM_TEMPERATURE, LLM_REPETITION_PENALTY)
 from app.embedder import Embedder
 from app.indexer import FAISSIndex
 from app.document_processor import load_documents
@@ -91,6 +92,8 @@ class RAGChain:
                 "messages": [{"role": "user", "content": prompt}],
                 "max_tokens": 512,
                 "stream": False,
+                "temperature": LLM_TEMPERATURE,
+                "repetition_penalty": LLM_REPETITION_PENALTY,
             },
         )
         resp.raise_for_status()
@@ -108,9 +111,9 @@ if __name__ == "__main__":
         validate()
     rag = RAGChain(mock=MOCK_MODE)
     questions = [
-        "RAG 系统包含哪几个阶段？",
-        "FAISS 支持哪些索引类型？",
-        "LoRA 的 rank 参数有什么作用？",
+        "FastAPI 中 async def 和普通 def 该怎么选？",
+        "FastAPI 的依赖注入有什么作用？",
+        "Docker 的核心概念有哪些？",
     ]
     for q in questions:
         print(f"\n{'='*60}")

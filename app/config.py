@@ -31,6 +31,16 @@ MOCK_MODE = os.getenv("MOCK_MODE", "false").lower() == "true"
 # ── 评估 ──
 TOP_K = 5  # 检索 Top-K
 
+# ── 生成参数（抑制 7B 小模型的重复 token 退化）──
+# 问题：Qwen2.5-7B 在长 prompt 下会重复生成字符（如"外部线线线池"、"运行的的运行实例"）。
+# 对照实验（同一问题 / 同一索引，仅改 penalty）：
+#   1.00 -> 重复严重；1.05 -> 轻微改善；
+#   1.15 -> ✅ 最优，回答分点清晰、结论完整，仅 1 处残留重复；
+#   1.30 -> ❌ 过惩罚导致语义崩溃（"FastAI"、"堵住堵塞"等乱字）。
+# 结论：1.15 为最优值，越大越好是错的——过惩罚会损害语义连贯性。
+LLM_TEMPERATURE = float(os.getenv("LLM_TEMPERATURE", "0.7"))
+LLM_REPETITION_PENALTY = float(os.getenv("LLM_REPETITION_PENALTY", "1.15"))
+
 def validate():
     """启动前校验 Key"""
     if not MOCK_MODE and not SILICONFLOW_API_KEY:

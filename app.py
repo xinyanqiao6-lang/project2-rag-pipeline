@@ -52,7 +52,7 @@ with gr.Blocks(title="RAG 知识库问答 Demo", theme=gr.themes.Soft()) as demo
     with gr.Row():
         question_input = gr.Textbox(
             label="请输入问题",
-            placeholder="例如：RAG 系统包含哪几个阶段？",
+            placeholder="例如：FastAPI 中 async def 和普通 def 该怎么选？",
             lines=2,
         )
     with gr.Row():
@@ -68,11 +68,12 @@ with gr.Blocks(title="RAG 知识库问答 Demo", theme=gr.themes.Soft()) as demo
 
     gr.Examples(
         examples=[
-            "RAG 系统包含哪几个核心阶段？",
-            "FAISS 支持哪些索引类型？",
-            "LoRA 的 rank 参数有什么作用？",
-            "MRR 指标是怎么计算的？",
-            "SSE 和 WebSocket 有什么区别？",
+            "FastAPI 中 async def 和普通 def 该怎么选？",
+            "FastAPI 的依赖注入有什么作用？",
+            "怎么用 Pydantic 声明请求体模型？",
+            "httpx 怎么发送异步请求？",
+            "Docker 的核心概念有哪些？",
+            "文本切分有哪些常见策略？",
         ],
         inputs=question_input,
     )
