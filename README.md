@@ -1,6 +1,7 @@
 # 项目2：RAG 数据处理管道
 
 > 构建 RAG（检索增强生成）数据处理管道，实现文档解析 → 文本清洗 → 多策略切分 → Embedding → FAISS 检索全链路，并对比 3 种切分策略的检索效果。
+> 语料库为 **7 份真实开源官方文档**（FastAPI/Pydantic/HTTPX/Docker/LangChain），来源见 `SOURCES.md`。
 
 ## 架构图
 
@@ -53,12 +54,9 @@ cp .env.example .env
 # 编辑 .env，填入硅基流动 API Key
 ```
 
-### 3. 生成文档库
+### 3. 语料库
 
-```bash
-python scripts/generate_docs.py
-# 生成 24 份 AI 技术文档到 docs/
-```
+语料已就位：`docs/` 下 7 份真实开源官方文档（来源见 `SOURCES.md`），无需生成。
 
 ### 4. 运行检索质量评估
 
@@ -88,11 +86,11 @@ project2-rag-pipeline/
 │   ├── indexer.py             # FAISS 向量索引
 │   └── rag_chain.py           # RAG 问答链
 ├── scripts/
-│   ├── generate_docs.py       # 文档生成器（24 份 AI 技术文档）
 │   └── evaluate.py            # 检索质量评估（命中率/MRR/延迟）
-├── docs/                      # 文档库（24 份 .md）
+├── docs/                      # 语料库（7 份真实开源文档 .md）
 ├── results/                   # 评估结果输出
 ├── app.py                     # Gradio 界面
+├── SOURCES.md                 # 语料来源清单
 ├── requirements.txt
 ├── .env.example
 └── README.md
@@ -144,12 +142,13 @@ project2-rag-pipeline/
 - 分片部署多 FAISS 实例
 - 或直接迁移到 Milvus 分布式
 
-## 真实指标（实测后填入）
+## 真实指标（2026-08-29 实测，真实开源语料）
 
 | 策略 | 块数 | 均长 | Top-5 命中率 | MRR | 均延迟 | P95 延迟 |
 |---|---|---|---|---|---|---|
-| fixed | ___ | ___ | ___ % | ___ | ___ ms | ___ ms |
-| recursive | ___ | ___ | ___ % | ___ | ___ ms | ___ ms |
-| semantic | ___ | ___ | ___ % | ___ | ___ ms | ___ ms |
+| fixed | 33 | 437 | 100 % | 1.0000 | 142.5 ms | 511.2 ms |
+| recursive | 32 | 447 | 100 % | 1.0000 | 159.3 ms | 328.6 ms |
+| semantic | 88 | 176 | 100 % | 1.0000 | 91.8 ms | 106.3 ms |
 
-> 最优策略：___（依据：命中率/MRR 最高且延迟可接受）
+> 最优策略：语义切分（命中率/MRR 满分，延迟最优 91.8ms；但块数最多、存储成本高）
+> 实用推荐：段落递归（块数最少 32 块，延迟可接受，性价比最优）

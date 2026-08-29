@@ -17,17 +17,19 @@ from app.embedder import Embedder
 from app.indexer import FAISSIndex
 
 # ── 10 个标注问题（ground_truth = 正确答案所在的 doc_id）──
+# 语料为真实开源官方文档（FastAPI/Pydantic/HTTPX/Docker/LangChain），
+# 每份文档标注 1-2 个问题，覆盖 7 份文档。
 TEST_QUESTIONS = [
-    {"q": "RAG 系统包含哪几个核心阶段？",           "gt_doc": "01_rag_overview"},
-    {"q": "Transformer 的自注意力机制计算公式是什么？",  "gt_doc": "03_attention_mechanism"},
-    {"q": "BERT 使用了哪两个预训练任务？",            "gt_doc": "04_bert_model"},
-    {"q": "LangChain 提供了哪些核心组件？",           "gt_doc": "06_langchain_framework"},
-    {"q": "FAISS 支持哪些索引类型？",                "gt_doc": "07_faiss_vector_search"},
-    {"q": "bge-large-zh-v1.5 的向量维度是多少？",      "gt_doc": "08_embedding_models"},
-    {"q": "LoRA 的 rank 参数有什么作用？",            "gt_doc": "10_finetuning_lora"},
-    {"q": "vLLM 的核心技术叫什么名字？",              "gt_doc": "15_vllm_inference"},
-    {"q": "SSE 和 WebSocket 有什么区别？",           "gt_doc": "16_sse_streaming"},
-    {"q": "MRR 指标是怎么计算的？",                  "gt_doc": "21_mrr_evaluation"},
+    {"q": "FastAPI 中 async def 和普通 def 的路径操作函数在运行方式上有什么区别？", "gt_doc": "01_fastapi_async"},
+    {"q": "FastAPI 的依赖注入用什么声明，依赖函数可以嵌套吗？", "gt_doc": "02_fastapi_dependencies"},
+    {"q": "FastAPI 如何声明一个请求体，用什么类型的参数？", "gt_doc": "03_fastapi_request_body"},
+    {"q": "Pydantic 中模型如何定义，用什么类继承？", "gt_doc": "04_pydantic_models"},
+    {"q": "Pydantic 模型的 extra 配置项可以取哪三个值？", "gt_doc": "04_pydantic_models"},
+    {"q": "HTTPX 如何发送 JSON 编码的数据？", "gt_doc": "05_httpx_quickstart"},
+    {"q": "HTTPX 最重要的两个异常类是什么？", "gt_doc": "05_httpx_quickstart"},
+    {"q": "Docker 客户端-服务器架构中，负责构建和运行容器的守护进程叫什么？", "gt_doc": "06_docker_overview"},
+    {"q": "Docker 镜像和容器是什么关系？", "gt_doc": "06_docker_overview"},
+    {"q": "LangChain 的 create_agent 核心公式是什么，agent 由哪几部分组成？", "gt_doc": "07_langchain_overview"},
 ]
 
 

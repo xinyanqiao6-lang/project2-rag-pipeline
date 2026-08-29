@@ -1,35 +1,35 @@
 [
   {
     "strategy": "fixed",
-    "total_chunks": 48,
-    "avg_chunk_size": 322,
-    "min_chunk_size": 25,
+    "total_chunks": 33,
+    "avg_chunk_size": 437,
+    "min_chunk_size": 74,
     "max_chunk_size": 500,
     "hit_rate": 1.0,
-    "mrr": 0.9333333333333332,
-    "avg_latency_ms": 492.2832489013672,
-    "p95_latency_ms": 712.8689289093018
+    "mrr": 1.0,
+    "avg_latency_ms": 142.54412651062012,
+    "p95_latency_ms": 511.1885070800781
   },
   {
     "strategy": "recursive",
-    "total_chunks": 45,
-    "avg_chunk_size": 340,
-    "min_chunk_size": 115,
-    "max_chunk_size": 545,
+    "total_chunks": 32,
+    "avg_chunk_size": 447,
+    "min_chunk_size": 114,
+    "max_chunk_size": 547,
     "hit_rate": 1.0,
-    "mrr": 0.9333333333333332,
-    "avg_latency_ms": 470.74387073516846,
-    "p95_latency_ms": 481.9011688232422
+    "mrr": 1.0,
+    "avg_latency_ms": 159.2801809310913,
+    "p95_latency_ms": 328.5541534423828
   },
   {
     "strategy": "semantic",
-    "total_chunks": 102,
-    "avg_chunk_size": 162,
-    "min_chunk_size": 112,
-    "max_chunk_size": 228,
+    "total_chunks": 88,
+    "avg_chunk_size": 176,
+    "min_chunk_size": 51,
+    "max_chunk_size": 230,
     "hit_rate": 1.0,
-    "mrr": 0.95,
-    "avg_latency_ms": 477.3314952850342,
-    "p95_latency_ms": 581.6717147827148
+    "mrr": 1.0,
+    "avg_latency_ms": 91.79296493530273,
+    "p95_latency_ms": 106.2619686126709
   }
 ]
