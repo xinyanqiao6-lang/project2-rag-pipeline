@@ -5,3 +5,5 @@ results/indices/
 results/*.csv
 results/*.json
 .venv/
+results/indices/
+results/*.npy

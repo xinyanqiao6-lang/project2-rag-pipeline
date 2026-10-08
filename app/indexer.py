@@ -19,6 +19,7 @@ class FAISSIndex:
         self.chunks: List[Chunk] = []
         self.vectors: np.ndarray = None
         self.index: faiss.IndexFlatIP = None  # 内积（cosine，因为已归一化）
+        self._pos: dict = None                 # chunk_id -> 下标，懒加载
 
     def build(self, chunks: List[Chunk], batch_size: int = 32):
         """建索引：对每个 chunk 做 Embedding，存入 FAISS"""
@@ -38,6 +39,7 @@ class FAISSIndex:
         self.vectors = np.array(all_vectors, dtype=np.float32)
         # 归一化（cosine 相似度 = 内积）
         faiss.normalize_L2(self.vectors)
+        self._pos = None          # 位置映射随语料变化失效
 
         # 建 Flat 索引（精确检索）
         self.index = faiss.IndexFlatIP(dim)
@@ -45,7 +47,7 @@ class FAISSIndex:
         print(f"✅ 索引建成：{self.index.ntotal} 个向量，维度 {dim}")
 
     def search(self, query: str, top_k: int = 5) -> List[Tuple[Chunk, float]]:
-        """检索：返回 Top-K (chunk, score) 对"""
+        """检索：返回 Top-K (chunk, score, rank, latency)"""
         if self.index is None:
             raise RuntimeError("索引未建，请先调用 build()")
 
@@ -64,6 +66,34 @@ class FAISSIndex:
             chunk = self.chunks[idx]
             results.append((chunk, float(score), rank + 1, latency))
         return results
+
+    def search_indices(self, query: str, top_k: int = 5) -> List[Tuple[int, float]]:
+        """检索：返回 Top-K (chunk 下标, score)。
+
+        与 search() 的区别：给需要**下标**的场景用（混合检索的 RRF 融合、
+        BM25 分数对齐等）。下标通过 chunk_id 查表得到，而不是对 Chunk 列表做
+        线性查找——后者在语料变大后会成为热点。
+        """
+        if self.index is None:
+            raise RuntimeError("索引未建，请先调用 build()")
+        t0 = time.time()
+        query_vec = np.array([self.embedder.embed_query(query)], dtype=np.float32)
+        faiss.normalize_L2(query_vec)
+        scores, indices = self.index.search(query_vec, top_k)
+        latency = (time.time() - t0) * 1000
+        pos = self.chunk_pos()
+        out = []
+        for idx, score in zip(indices[0], scores[0]):
+            if idx < 0:
+                continue
+            out.append((pos.get(self.chunks[idx].chunk_id, int(idx)), float(score)))
+        return out
+
+    def chunk_pos(self) -> dict:
+        """chunk_id -> 下标 的映射（懒加载，build 时失效）。"""
+        if getattr(self, "_pos", None) is None or len(self._pos) != len(self.chunks):
+            self._pos = {c.chunk_id: i for i, c in enumerate(self.chunks)}
+        return self._pos
 
     def save(self, path: Path = None):
         """保存索引和 chunks 到磁盘"""
